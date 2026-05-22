@@ -131,14 +131,29 @@ CREATE TABLE events_2026_04 PARTITION OF events
 
 `docker compose up` 실행 후 `output/` 폴더에 5개 차트 이미지가 생성됩니다.
 
-| 파일명 | 내용 |
-|--------|------|
-| `01_event_type_distribution.png` | 이벤트 타입별 발생 횟수 |
-| `02_hourly_trend.png` | 시간대별 이벤트 추이 |
-| `03_top_users.png` | 상위 10명 유저 활동 |
-| `04_conversion_rate.png` | 상품별 클릭→구매 전환율 |
-| `05_daily_revenue.png` | 일별 매출 |
+### 이벤트 타입 분포
+![event distribution](output/01_event_type_distribution.png)
+> page_view가 40%로 가장 많으며 실제 이커머스 트래픽 비율을 반영했습니다.
 
+### 시간대별 이벤트 추이
+![hourly trend](output/02_hourly_trend.png)
+> 90일간 트래픽이 균등하게 분포됩니다.
+
+### 상위 유저 활동
+![top users](output/03_top_users.png)
+> 이벤트 수는 비슷하지만 구매액 차이가 큽니다. 구매형 vs 탐색형 유저로 분류할 수 있습니다.
+
+### 상품별 전환율
+![conversion rate](output/04_conversion_rate.png)
+> Running Shorts 전환율이 46%로 가장 높고 Nike Air Max가 35%로 가장 낮습니다.
+
+### 일별 매출
+![daily revenue](output/05_daily_revenue.png)
+> 일별 매출이 400만~1000만원 사이에서 등락합니다.
+
+### 유저별 세션 수 (Retention)
+![retention](output/06_retention.png)
+> 상위 유저들의 세션 수 분포입니다. 세션이 많을수록 충성 유저로 분류할 수 있습니다.
 ---
 
 ## 기술 스택
