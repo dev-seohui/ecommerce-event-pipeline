@@ -1,0 +1,56 @@
+services:
+  # ── PostgreSQL DB ──────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: event_db
+    environment:
+      POSTGRES_DB:       eventdb
+      POSTGRES_USER:     eventuser
+      POSTGRES_PASSWORD: eventpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventuser -d eventdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── 이벤트 생성기 ──────────────────────────────────────────
+  generator:
+    build: .
+    container_name: event_generator
+    command: python generator/event_generator.py
+    environment:
+      DB_HOST:     db
+      DB_PORT:     5432
+      DB_NAME:     eventdb
+      DB_USER:     eventuser
+      DB_PASSWORD: eventpass
+      SESSION_COUNT: 10000     # 1만건 (실무 규모 시뮬레이션)
+      DAYS_RANGE:  90         # 3개월치 데이터
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── 시각화 ────────────────────────────────────────────────
+  visualizer:
+    build: .
+    container_name: event_visualizer
+    command: python visualization/visualize.py
+    environment:
+      DB_HOST:     db
+      DB_PORT:     5432
+      DB_NAME:     eventdb
+      DB_USER:     eventuser
+      DB_PASSWORD: eventpass
+      OUTPUT_DIR:  /app/output
+    volumes:
+      - ./output:/app/output     
+    depends_on:
+      generator:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
